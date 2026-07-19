@@ -227,7 +227,8 @@ export class GenogramRenderer {
   private drawProbandMarker(svg: Svg, p: Person, x: number, y: number, stroke: string): void {
     shapeFor(p.sex).probandOutline?.(svg, x, y, R, stroke);
     const d = Math.SQRT1_2;                    // cos/sin of 45°
-    const tipX = x - R * d, tipY = y - R * d;  // top-left point on the symbol border
+    const tipR = R + 9;                        // clear of the proband outline (R+4)
+    const tipX = x - tipR * d, tipY = y - tipR * d; // top-left point just outside the symbol
     const len = 16, hl = 6, ang = Math.PI / 4; // shaft length, head length, 45° pointing in
     const tailX = tipX - d * len, tailY = tipY - d * len;
     const h1x = tipX - Math.cos(ang - 0.5) * hl, h1y = tipY - Math.sin(ang - 0.5) * hl;
