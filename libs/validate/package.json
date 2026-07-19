@@ -17,10 +17,10 @@
   },
   "files": ["dist"],
   "dependencies": {
-    "@famtree/schema": "workspace:*"
+    "@famtree/schema": "workspace:0.1.0"
   },
   "peerDependencies": {
-    "ajv": "^8"
+    "ajv": "8.20.0"
   },
   "peerDependenciesMeta": {
     "ajv": { "optional": true }

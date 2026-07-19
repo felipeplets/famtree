@@ -5,13 +5,13 @@
     "": {
       "name": "famtree-workspace",
       "devDependencies": {
-        "@types/bun": "latest",
-        "@types/node": "^20",
-        "ajv": "^8",
-        "nx": "^23.1.0",
-        "prettier": "^3.9.5",
-        "tsup": "^8",
-        "typescript": "^7.0.2",
+        "@types/bun": "1.3.14",
+        "@types/node": "20.19.43",
+        "ajv": "8.20.0",
+        "nx": "23.1.0",
+        "prettier": "3.9.5",
+        "tsup": "8.5.1",
+        "typescript": "7.0.2",
       },
     },
     "apps/cli": {
@@ -21,12 +21,12 @@
         "famtree": "dist/cli.js",
       },
       "dependencies": {
-        "@famtree/renderer": "workspace:*",
-        "@famtree/schema": "workspace:*",
-        "@famtree/validate": "workspace:*",
+        "@famtree/renderer": "workspace:0.1.0",
+        "@famtree/schema": "workspace:0.1.0",
+        "@famtree/validate": "workspace:0.1.0",
       },
       "peerDependencies": {
-        "ajv": "^8",
+        "ajv": "8.20.0",
       },
       "optionalPeers": [
         "ajv",
@@ -36,15 +36,15 @@
       "name": "@famtree/core",
       "version": "0.1.0",
       "dependencies": {
-        "@famtree/schema": "workspace:*",
+        "@famtree/schema": "workspace:0.1.0",
       },
     },
     "libs/renderer": {
       "name": "@famtree/renderer",
       "version": "0.1.0",
       "dependencies": {
-        "@famtree/core": "workspace:*",
-        "@famtree/schema": "workspace:*",
+        "@famtree/core": "workspace:0.1.0",
+        "@famtree/schema": "workspace:0.1.0",
       },
     },
     "libs/schema": {
@@ -55,10 +55,10 @@
       "name": "@famtree/validate",
       "version": "0.1.0",
       "dependencies": {
-        "@famtree/schema": "workspace:*",
+        "@famtree/schema": "workspace:0.1.0",
       },
       "peerDependencies": {
-        "ajv": "^8",
+        "ajv": "8.20.0",
       },
       "optionalPeers": [
         "ajv",

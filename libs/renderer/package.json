@@ -17,8 +17,8 @@
   },
   "files": ["dist"],
   "dependencies": {
-    "@famtree/schema": "workspace:*",
-    "@famtree/core": "workspace:*"
+    "@famtree/schema": "workspace:0.1.0",
+    "@famtree/core": "workspace:0.1.0"
   },
   "scripts": {
     "build": "tsup && tsc -p tsconfig.build.json",
