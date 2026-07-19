@@ -52,6 +52,7 @@
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "example": "bun src/cli.ts examples/example.genogram.json -o examples/genogram.svg",
     "prepublishOnly": "bun run build"
   },
@@ -67,6 +68,7 @@
     "@types/bun": "latest",
     "@types/node": "^20",
     "ajv": "^8",
+    "prettier": "^3.9.5",
     "tsup": "^8",
     "typescript": "^5"
   }

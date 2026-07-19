@@ -3,17 +3,11 @@
 // famtree renders a genogram document (see famtree.schema.json) to SVG.
 // The core is dependency-free and runtime-agnostic (works on Node and Bun).
 
-import { GenogramRenderer, type RenderResult, type RenderStats } from "./renderer";
-import type { Genogram } from "./types";
-
-export { GenogramRenderer } from "./renderer";
-export type { RenderResult, RenderStats } from "./renderer";
-
-export { GenogramGraph } from "./graph";
-export { GenerationalLayout, Positions, type LayoutEngine } from "./layout";
-export { Svg, esc } from "./svg";
-
-export * from "./types";
+import { GenogramRenderer, type RenderResult, type RenderStats } from "./renderer"
+import { GenogramGraph } from "./graph"
+import { GenerationalLayout, Positions, type LayoutEngine } from "./layout"
+import { Svg, esc } from "./svg"
+import type { Genogram } from "./types"
 
 /**
  * Render a genogram document to an SVG string.
@@ -21,9 +15,17 @@ export * from "./types";
  * @param doc A genogram document compliant with `famtree.schema.json`.
  * @returns The SVG markup plus summary statistics.
  */
-export function renderGenogram(doc: Genogram): RenderResult {
-  return new GenogramRenderer().render(doc);
+function renderGenogram(doc: Genogram): RenderResult {
+  return new GenogramRenderer().render(doc)
 }
 
-/** Re-export the aggregated types under a namespace-friendly alias. */
-export type { Genogram, RenderResult as FamtreeRenderResult, RenderStats as FamtreeRenderStats };
+export * from "./types"
+export { GenogramRenderer, GenogramGraph, GenerationalLayout, Positions, Svg, esc, renderGenogram }
+export type {
+  RenderResult,
+  RenderStats,
+  LayoutEngine,
+  Genogram,
+  RenderResult as FamtreeRenderResult,
+  RenderStats as FamtreeRenderStats,
+}
