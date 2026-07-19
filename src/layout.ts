@@ -72,7 +72,7 @@ export class GenerationalLayout implements LayoutEngine {
     const union = this.graph.unionHeadedBy(id);
     if (union && !this.placedUnion.has(union.id)) return this.placeUnion(union, id);
 
-    const kids = this.graph.sortByBirth(this.graph.singleChildrenOf(id));
+    const kids = this.orderSiblings(this.graph.singleChildrenOf(id));
     if (kids.length) {
       const x = this.centerOver(kids);
       this.xOf.set(id, x);
@@ -87,7 +87,7 @@ export class GenerationalLayout implements LayoutEngine {
   private placeUnion(union: UnionRelationship, anchor: string): number {
     this.placedUnion.add(union.id);
     const other = union.partnerIds.find((p) => p !== anchor)!;
-    const kids = this.graph.sortByBirth(this.graph.childrenOfUnion(union.id));
+    const kids = this.orderSiblings(this.graph.childrenOfUnion(union.id));
 
     let center: number;
     if (kids.length) {
@@ -105,5 +105,16 @@ export class GenerationalLayout implements LayoutEngine {
   private centerOver(ids: string[]): number {
     const xs = ids.map((k) => this.placeSubtree(k));
     return (xs[0] + xs[xs.length - 1]) / 2;
+  }
+
+  // Birth order, but children who themselves head a union (bringing in a
+  // married-in spouse and that spouse's own cluster) are placed last so the
+  // horizontal expansion happens at the group's edge instead of splitting the
+  // blood-sibling row.
+  private orderSiblings(ids: string[]): string[] {
+    const sorted = this.graph.sortByBirth(ids);
+    const singles = sorted.filter((id) => !this.graph.unionHeadedBy(id));
+    const married = sorted.filter((id) => this.graph.unionHeadedBy(id));
+    return [...singles, ...married];
   }
 }
