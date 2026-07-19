@@ -14,3 +14,6 @@ dist/
 .vscode/
 
 *.log
+
+# nx
+.nx/

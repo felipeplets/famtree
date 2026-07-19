@@ -1,0 +1,28 @@
+{
+  "name": "@famtree/cli",
+  "version": "0.1.0",
+  "description": "CLI to render genogram JSON documents to SVG.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Felipe Plets",
+  "keywords": ["genogram", "family-tree", "pedigree", "svg", "cli"],
+  "bin": {
+    "famtree": "dist/cli.js"
+  },
+  "files": ["dist"],
+  "dependencies": {
+    "@famtree/schema": "workspace:*",
+    "@famtree/renderer": "workspace:*",
+    "@famtree/validate": "workspace:*"
+  },
+  "peerDependencies": {
+    "ajv": "^8"
+  },
+  "peerDependenciesMeta": {
+    "ajv": { "optional": true }
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}

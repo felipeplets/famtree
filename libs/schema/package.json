@@ -1,0 +1,25 @@
+{
+  "name": "@famtree/schema",
+  "version": "0.1.0",
+  "description": "JSON Schema and TypeScript types for genogram documents.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Felipe Plets",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./famtree.schema.json": "./famtree.schema.json",
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "famtree.schema.json"],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}

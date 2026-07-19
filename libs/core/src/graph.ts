@@ -9,7 +9,7 @@ import type {
   UnionRelationship,
   ParentChildRelationship,
   EmotionalRelationship,
-} from "./types"
+} from "@famtree/schema"
 
 const isUnion = (r: Relationship): r is UnionRelationship => r.type === "union"
 const isParentChild = (r: Relationship): r is ParentChildRelationship => r.type === "parent-child"

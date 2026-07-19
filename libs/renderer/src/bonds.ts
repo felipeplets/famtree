@@ -1,7 +1,7 @@
 // Emotional-bond visual vocabulary. Each bond maps to a reusable style
 // descriptor; adding a bond style is a data change, not a code change (OCP).
 
-import type { EmotionalBond } from "./types"
+import type { EmotionalBond } from "@famtree/schema"
 
 interface BondStyle {
   color: string

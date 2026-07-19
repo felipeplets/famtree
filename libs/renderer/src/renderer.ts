@@ -2,13 +2,12 @@
 // and the shape/bond strategies into a finished SVG document. It orchestrates —
 // the domain knowledge lives in the collaborators it depends on.
 
-import type { EmotionalRelationship, Genogram, ParentChildRelationship, Person } from "./types"
-import { GenogramGraph } from "./graph"
-import { GenerationalLayout, type LayoutEngine, type Positions } from "./layout"
+import type { EmotionalRelationship, Genogram, ParentChildRelationship, Person } from "@famtree/schema"
+import { GenogramGraph, GenerationalLayout, type LayoutEngine, type Positions } from "@famtree/core"
 import { Svg, esc } from "./svg"
 import { shapeFor } from "./shapes"
 import { bondStyle, strokeOffsets, type BondStyle } from "./bonds"
-import { GEN_SPACING, LABEL_LINE_H, LABEL_WRAP, MARGIN, R } from "./constants"
+import { GEN_SPACING, LABEL_LINE_H, LABEL_WRAP, MARGIN, R } from "@famtree/core"
 
 const STROKE = `stroke="#222" stroke-width="2" fill="none"`
 

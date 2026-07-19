@@ -11,8 +11,9 @@
 import { readFileSync, writeFileSync } from "node:fs"
 import { fileURLToPath } from "node:url"
 import { dirname, resolve } from "node:path"
-import { renderGenogram } from "./index"
-import type { Genogram } from "./types"
+import { renderGenogram } from "@famtree/renderer"
+import { validate } from "@famtree/validate"
+import type { Genogram } from "@famtree/schema"
 
 const HELP = `famtree — render a genogram JSON document to SVG
 
@@ -92,24 +93,6 @@ function packageVersion(): string {
 function readInput(input?: string): string {
   if (!input || input === "-") return readFileSync(0, "utf8") // fd 0 = stdin
   return readFileSync(input, "utf8")
-}
-
-async function validate(doc: unknown): Promise<void> {
-  let Ajv2020: typeof import("ajv/dist/2020").default
-  try {
-    // Explicit .js extension required for Node ESM resolution.
-    Ajv2020 = (await import("ajv/dist/2020.js")).default
-  } catch {
-    throw new Error("The --validate flag requires the optional 'ajv' dependency. Install it with: npm i ajv")
-  }
-  const here = dirname(fileURLToPath(import.meta.url))
-  const schema = JSON.parse(readFileSync(resolve(here, "../famtree.schema.json"), "utf8"))
-  const ajv = new Ajv2020({ allErrors: true, strict: false, logger: false })
-  const check = ajv.compile(schema)
-  if (!check(doc)) {
-    const details = (check.errors ?? []).map((e) => `  • ${e.instancePath || "(root)"} ${e.message}`).join("\n")
-    throw new Error(`Document does not match famtree.schema.json:\n${details}`)
-  }
 }
 
 async function main(): Promise<number> {

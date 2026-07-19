@@ -1,0 +1,32 @@
+{
+  "name": "@famtree/validate",
+  "version": "0.1.0",
+  "description": "Optional AJV-backed validation against the famtree JSON Schema.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Felipe Plets",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist"],
+  "dependencies": {
+    "@famtree/schema": "workspace:*"
+  },
+  "peerDependencies": {
+    "ajv": "^8"
+  },
+  "peerDependenciesMeta": {
+    "ajv": { "optional": true }
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}

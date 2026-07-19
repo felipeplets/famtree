@@ -1,9 +1,9 @@
 // Node shape strategies keyed by biological sex. Adding a new shape means adding
 // a registry entry, not editing the renderer (Open-Closed).
 
-import type { Sex } from "./types"
+import type { Sex } from "@famtree/schema"
 import type { Svg } from "./svg"
-import { NODE } from "./constants"
+import { NODE } from "@famtree/core"
 
 interface NodeShape {
   /** Draw the primary node outline/fill. */

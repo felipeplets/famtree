@@ -2,9 +2,9 @@ import { expect, test, describe } from "bun:test"
 import { readFileSync } from "node:fs"
 import { resolve } from "node:path"
 import { renderGenogram, GenogramRenderer } from "../src/index"
-import type { Genogram } from "../src/index"
+import type { Genogram } from "@famtree/schema"
 
-const root = resolve(import.meta.dir, "..")
+const root = resolve(import.meta.dir, "../../..")
 const example = JSON.parse(readFileSync(resolve(root, "examples/example.genogram.json"), "utf8")) as Genogram
 
 describe("renderGenogram", () => {

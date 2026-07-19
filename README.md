@@ -1,28 +1,42 @@
 # famtree
 
-[![npm](https://img.shields.io/npm/v/famtree.svg)](https://www.npmjs.com/package/famtree)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
-A [JSON Schema](./famtree.schema.json) for **genograms** — family diagrams capturing
-individuals, their biological/legal relationships, and their emotional bonds — plus a
-fast, dependency-free **SVG renderer** and a **CLI**.
+An [NX](https://nx.dev) monorepo for **genograms** — family diagrams capturing
+individuals, their biological/legal relationships, and their emotional bonds — built
+around a [JSON Schema](./libs/schema/famtree.schema.json), a fast dependency-free **SVG
+renderer**, and a **CLI**.
 
 Works on **Node ≥ 18** and **Bun**.
 
 ![Example genogram](./examples/genogram.png)
 
+## Packages
+
+Everything is published under the `@famtree/*` scope. Today the only publicly consumed
+package is **`@famtree/cli`**; the rest are the libraries it composes.
+
+| Package | Path | Responsibility |
+|---------|------|----------------|
+| [`@famtree/schema`](./libs/schema) | `libs/schema` | JSON Schema + TypeScript types (data contract, zero deps) |
+| [`@famtree/core`](./libs/core) | `libs/core` | Domain graph + layout engine (doc → positioned graph) |
+| [`@famtree/renderer`](./libs/renderer) | `libs/renderer` | SVG renderer + `renderGenogram()` |
+| [`@famtree/validate`](./libs/validate) | `libs/validate` | Optional AJV validation against the schema |
+| [`@famtree/cli`](./apps/cli) | `apps/cli` | `famtree` CLI (the public entry point) |
+
+Dependency graph (acyclic):
+
+```
+schema ─┬─> core ─────> renderer ─┬─> @famtree/cli
+        └─> validate ─────────────┘
+```
+
 ## Install
 
 ```bash
-npm install famtree      # library + CLI
-# or
-bun add famtree
-```
-
-Run the CLI without installing:
-
-```bash
-npx famtree family.json -o family.svg
+npm install -g @famtree/cli
+# or run without installing
+npx @famtree/cli family.json -o family.svg
 ```
 
 ## CLI
@@ -55,8 +69,8 @@ famtree family.json --validate -o out.svg  # validate, then render
 ## Library
 
 ```ts
-import { renderGenogram } from "famtree";
-import type { Genogram } from "famtree";
+import { renderGenogram } from "@famtree/renderer"
+import type { Genogram } from "@famtree/schema"
 
 const doc: Genogram = {
   version: "1.0.0",
@@ -69,23 +83,20 @@ const doc: Genogram = {
     { id: "u", type: "union", partnerIds: ["a", "b"], unionType: "married" },
     { id: "pc", type: "parent-child", childId: "c", unionId: "u" },
   ],
-};
+}
 
-const { svg, stats } = renderGenogram(doc);
-console.log(stats); // { people: 3, unions: 1, emotions: 0, width, height }
+const { svg, stats } = renderGenogram(doc)
+console.log(stats) // { people: 3, unions: 1, emotions: 0, width, height }
 ```
 
-Advanced building blocks are also exported: `GenogramRenderer`, `GenogramGraph`,
-`GenerationalLayout` (a `LayoutEngine` you can swap), `Positions`, and the `Svg`
-builder.
-
-The JSON Schema is published with the package and importable via the `famtree/schema`
-export.
+Advanced building blocks: `GenogramRenderer`, `Svg`, `esc` (`@famtree/renderer`);
+`GenogramGraph`, `GenerationalLayout` (a swappable `LayoutEngine`), `Positions`
+(`@famtree/core`); the schema object and all types (`@famtree/schema`).
 
 ## The schema
 
-`famtree.schema.json` (JSON Schema Draft 2020-12) describes a document with three
-top-level parts:
+`libs/schema/famtree.schema.json` (JSON Schema Draft 2020-12) describes a document with
+three top-level parts:
 
 - **`people`** — individuals with `sex` (drives node shape), vital status,
   proband/pregnancy flags, twins, birth order, medical/mental-health/substance-use
@@ -111,32 +122,25 @@ top-level parts:
 | Pregnancy loss | Small triangle (miscarriage/abortion) or diamond (stillbirth) |
 | Emotional bonds | Colored parallel lines (closeness) or zigzag (conflict) |
 
-## Architecture
-
-The renderer is split into focused modules under `src/`:
-
-| Module | Responsibility |
-|--------|----------------|
-| `types.ts` | TypeScript types mirroring the schema |
-| `constants.ts` | Shared geometry constants |
-| `svg.ts` | SVG element builder |
-| `graph.ts` | Indexed family-structure model + generation ranking |
-| `layout.ts` | `LayoutEngine` abstraction + generational layout |
-| `shapes.ts` | Node-shape strategies keyed by sex |
-| `bonds.ts` | Emotional-bond style registry |
-| `renderer.ts` | Orchestrates the above into an SVG |
-| `index.ts` | Public API |
-| `cli.ts` | CLI entry point |
-
 ## Development
 
+This is an NX package-based monorepo using Bun workspaces.
+
 ```bash
-bun install
-bun test           # run tests
-bun run typecheck  # type-check
-bun run build      # bundle to dist/ (ESM + CJS + d.ts)
-bun run example    # render examples/example.genogram.json
+bun install              # install + link workspaces
+bun run typecheck        # nx run-many -t typecheck
+bun run test             # nx run-many -t test
+bun run build            # nx run-many -t build (respects dependency order)
+bun run graph            # open the NX project graph
+bun run example          # render examples/example.genogram.json
+
+# per-project
+npx nx build @famtree/renderer
+npx nx test @famtree/renderer
 ```
+
+During development the `@famtree/*` imports resolve straight to source via
+`tsconfig.base.json` path aliases, so no build step is needed to run or test.
 
 ## License
 
