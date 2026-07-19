@@ -19,9 +19,9 @@
     "@types/bun": "latest",
     "@types/node": "^20",
     "ajv": "^8",
-    "nx": "^20",
+    "nx": "^23.1.0",
     "prettier": "^3.9.5",
     "tsup": "^8",
-    "typescript": "^5"
+    "typescript": "^7.0.2"
   }
 }

@@ -13,12 +13,11 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
     "paths": {
-      "@famtree/schema": ["libs/schema/src/index.ts"],
-      "@famtree/core": ["libs/core/src/index.ts"],
-      "@famtree/renderer": ["libs/renderer/src/index.ts"],
-      "@famtree/validate": ["libs/validate/src/index.ts"]
+      "@famtree/schema": ["./libs/schema/src/index.ts"],
+      "@famtree/core": ["./libs/core/src/index.ts"],
+      "@famtree/renderer": ["./libs/renderer/src/index.ts"],
+      "@famtree/validate": ["./libs/validate/src/index.ts"]
     }
   }
 }

@@ -142,6 +142,11 @@ npx nx test @famtree/renderer
 During development the `@famtree/*` imports resolve straight to source via
 `tsconfig.base.json` path aliases, so no build step is needed to run or test.
 
+> **Build note:** the toolchain uses the native **TypeScript 7** compiler. Since
+> TS 7.0 ships the fast `tsc` but no programmatic API yet, `tsup` handles JS
+> bundling (ESM + CJS) while `tsc --emitDeclarationOnly` (via each package's
+> `tsconfig.build.json`) generates the `.d.ts` files.
+
 ## License
 
 [MIT](./LICENSE) © Felipe Plets

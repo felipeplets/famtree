@@ -21,7 +21,7 @@
     "@famtree/core": "workspace:*"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "bun test"
   }

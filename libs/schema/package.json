@@ -19,7 +19,7 @@
   },
   "files": ["dist", "famtree.schema.json"],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   }
 }
