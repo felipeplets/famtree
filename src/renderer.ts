@@ -226,8 +226,17 @@ export class GenogramRenderer {
 
   private drawProbandMarker(svg: Svg, p: Person, x: number, y: number, stroke: string): void {
     shapeFor(p.sex).probandOutline?.(svg, x, y, R, stroke);
-    svg.path(`M ${x - R - 24} ${y + R + 24} L ${x - R - 2} ${y + R + 2}`, STROKE);
-    svg.path(`M ${x - R - 2} ${y + R + 2} l -10 0 m 10 0 l 0 -10`, STROKE);
+    const d = Math.SQRT1_2;                    // cos/sin of 45°
+    const tipX = x - R * d, tipY = y - R * d;  // top-left point on the symbol border
+    const len = 16, hl = 6, ang = Math.PI / 4; // shaft length, head length, 45° pointing in
+    const tailX = tipX - d * len, tailY = tipY - d * len;
+    const h1x = tipX - Math.cos(ang - 0.5) * hl, h1y = tipY - Math.sin(ang - 0.5) * hl;
+    const h2x = tipX - Math.cos(ang + 0.5) * hl, h2y = tipY - Math.sin(ang + 0.5) * hl;
+    svg.line(tailX, tailY, tipX, tipY, STROKE);
+    svg.path(
+      `M ${h1x.toFixed(1)} ${h1y.toFixed(1)} L ${tipX.toFixed(1)} ${tipY.toFixed(1)} L ${h2x.toFixed(1)} ${h2y.toFixed(1)}`,
+      STROKE,
+    );
   }
 
   private drawDeceasedCross(svg: Svg, x: number, y: number, stroke: string, sw: number): void {
