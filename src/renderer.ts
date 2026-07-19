@@ -8,7 +8,7 @@ import { GenerationalLayout, type LayoutEngine, type Positions } from "./layout"
 import { Svg, esc } from "./svg";
 import { shapeFor } from "./shapes";
 import { bondStyle, strokeOffsets } from "./bonds";
-import { GEN_SPACING, MARGIN, R } from "./constants";
+import { GEN_SPACING, LABEL_LINE_H, LABEL_WRAP, MARGIN, R } from "./constants";
 
 const STROKE = `stroke="#222" stroke-width="2" fill="none"`;
 
@@ -27,6 +27,22 @@ export interface RenderResult {
 
 function year(d?: string): string | undefined {
   return d ? d.slice(0, 4) : undefined;
+}
+
+/** Greedily wrap a label into lines no longer than `max` characters, breaking on
+ *  spaces. A single word longer than `max` is kept whole on its own line. */
+function wrapLabel(text: string, max: number): string[] {
+  const words = text.split(/\s+/).filter(Boolean);
+  if (!words.length) return [text];
+  const lines: string[] = [];
+  let line = "";
+  for (const w of words) {
+    if (!line) line = w;
+    else if (line.length + 1 + w.length <= max) line += ` ${w}`;
+    else { lines.push(line); line = w; }
+  }
+  if (line) lines.push(line);
+  return lines;
 }
 
 /** Dashed stroke for non-biological (adopted/foster/step) parent links. */
@@ -215,9 +231,18 @@ export class GenogramRenderer {
 
   private drawLabels(svg: Svg, p: Person, x: number, y: number): void {
     const yrs = [year(p.birthDate), year(p.deathDate)].filter(Boolean).join("–");
-    svg.text(x, y + R + 15, p.name ?? p.id, `text-anchor="middle" font-size="12" font-weight="600" fill="#111"`);
-    if (yrs) svg.text(x, y + R + 29, yrs, `text-anchor="middle" font-size="10" fill="#555"`);
+    const nameLines = wrapLabel(p.name ?? p.id, LABEL_WRAP);
+    let ty = y + R + 15;
+    for (const line of nameLines) {
+      svg.text(x, ty, line, `text-anchor="middle" font-size="12" font-weight="600" fill="#111"`);
+      ty += LABEL_LINE_H;
+    }
+    let below = ty + 1;
+    if (yrs) {
+      svg.text(x, below, yrs, `text-anchor="middle" font-size="10" fill="#555"`);
+      below += LABEL_LINE_H;
+    }
     const cond = (p.conditions ?? []).map((c) => c.name).join(", ");
-    if (cond) svg.text(x, y + R + (yrs ? 42 : 29), cond, `text-anchor="middle" font-size="9" fill="#777"`);
+    if (cond) svg.text(x, below, cond, `text-anchor="middle" font-size="9" fill="#777"`);
   }
 }
