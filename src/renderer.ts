@@ -2,7 +2,7 @@
 // and the shape/bond strategies into a finished SVG document. It orchestrates —
 // the domain knowledge lives in the collaborators it depends on.
 
-import type { Genogram, ParentChildRelationship, Person } from "./types";
+import type { EmotionalRelationship, Genogram, ParentChildRelationship, Person } from "./types";
 import { GenogramGraph } from "./graph";
 import { GenerationalLayout, type LayoutEngine, type Positions } from "./layout";
 import { Svg, esc } from "./svg";
@@ -160,24 +160,117 @@ export class GenogramRenderer {
   }
 
   private drawEmotional(svg: Svg, graph: GenogramGraph, pos: Positions): void {
+    const sameGen: EmotionalRelationship[] = [];
     for (const e of graph.emotions) {
       const [a, b] = e.personIds;
-      const st = bondStyle(e.bond);
-      const x1 = pos.cx(a), y1 = pos.cy(a), x2 = pos.cx(b), y2 = pos.cy(b);
+      if (graph.generationOf(a) === graph.generationOf(b)) sameGen.push(e);
+      else this.drawStraightBond(svg, pos, e);
+    }
+    this.drawRoutedBonds(svg, graph, pos, sameGen);
+  }
 
-      if (st.zig) {
-        svg.path(zigzag(x1, y1, x2, y2), `stroke="${st.color}" stroke-width="1.6" fill="none"`);
-      } else {
-        const nx = -(y2 - y1), ny = x2 - x1;
-        const nl = Math.hypot(nx, ny) || 1;
-        for (const o of strokeOffsets(st.lines)) {
-          const ox = (nx / nl) * o, oy = (ny / nl) * o;
-          const dash = st.dash ? `stroke-dasharray="${st.dash}"` : "";
-          svg.line(x1 + ox, y1 + oy, x2 + ox, y2 + oy, `stroke="${st.color}" stroke-width="1.6" ${dash}`);
+  /** A bond drawn as a direct line/zigzag between the two symbols (used across
+   *  generations, where a straight diagonal reads cleanly). */
+  private drawStraightBond(svg: Svg, pos: Positions, e: EmotionalRelationship): void {
+    const [a, b] = e.personIds;
+    const st = bondStyle(e.bond);
+    const x1 = pos.cx(a), y1 = pos.cy(a), x2 = pos.cx(b), y2 = pos.cy(b);
+
+    if (st.zig) {
+      svg.path(zigzag(x1, y1, x2, y2), `stroke="${st.color}" stroke-width="1.6" fill="none"`);
+    } else {
+      const nx = -(y2 - y1), ny = x2 - x1;
+      const nl = Math.hypot(nx, ny) || 1;
+      for (const o of strokeOffsets(st.lines)) {
+        const ox = (nx / nl) * o, oy = (ny / nl) * o;
+        const dash = st.dash ? `stroke-dasharray="${st.dash}"` : "";
+        svg.line(x1 + ox, y1 + oy, x2 + ox, y2 + oy, `stroke="${st.color}" stroke-width="1.6" ${dash}`);
+      }
+    }
+    this.drawBondArrow(svg, e.direction, st.color, x1, y1, x2, y2);
+  }
+
+  /** Same-generation bonds routed below the labels: two short vertical stubs and
+   *  a styled horizontal segment, packed into nested lanes so ties spanning
+   *  several people don't run straight through the intervening symbols. */
+  private drawRoutedBonds(
+    svg: Svg, graph: GenogramGraph, pos: Positions, ties: EmotionalRelationship[],
+  ): void {
+    const LANE_STEP = 15;
+    const byGen = new Map<number, EmotionalRelationship[]>();
+    for (const e of ties) {
+      const g = graph.generationOf(e.personIds[0]);
+      const arr = byGen.get(g) ?? [];
+      arr.push(e);
+      byGen.set(g, arr);
+    }
+
+    for (const [g, list] of byGen) {
+      const rowCy = g * GEN_SPACING + MARGIN + R;
+
+      type Item = { e: EmotionalRelationship; lo: number; hi: number; lane: number };
+      const items: Item[] = list
+        .map((e) => {
+          const [a, b] = e.personIds;
+          const xa = pos.cx(a), xb = pos.cx(b);
+          return { e, lo: Math.min(xa, xb), hi: Math.max(xa, xb), lane: 0 };
+        })
+        .sort((p, q) => p.hi - p.lo - (q.hi - q.lo));
+
+      // Greedy lane packing: narrower spans take shallow lanes; wider spans that
+      // overlap them get pushed deeper (touching endpoints are allowed).
+      const lanes: Item[][] = [];
+      for (const it of items) {
+        let lane = 0;
+        for (;;) {
+          const occ = lanes[lane] ?? (lanes[lane] = []);
+          if (!occ.some((o) => it.lo < o.hi && o.lo < it.hi)) {
+            it.lane = lane;
+            occ.push(it);
+            break;
+          }
+          lane++;
         }
       }
-      this.drawBondArrow(svg, e.direction, st.color, x1, y1, x2, y2);
+
+      for (const it of items) {
+        const base = rowCy + this.maxLabelDepth(graph, pos, g, it.lo, it.hi) + 10;
+        const laneY = base + it.lane * LANE_STEP;
+        const st = bondStyle(it.e.bond);
+        const stub = `stroke="${st.color}" stroke-width="1.4" fill="none"`;
+        svg.line(it.lo, rowCy + R, it.lo, laneY, stub);
+        svg.line(it.hi, rowCy + R, it.hi, laneY, stub);
+
+        if (st.zig) {
+          svg.path(zigzag(it.lo, laneY, it.hi, laneY), `stroke="${st.color}" stroke-width="1.6" fill="none"`);
+        } else {
+          const dash = st.dash ? `stroke-dasharray="${st.dash}"` : "";
+          for (const o of strokeOffsets(st.lines)) {
+            svg.line(it.lo, laneY + o, it.hi, laneY + o, `stroke="${st.color}" stroke-width="1.6" ${dash}`);
+          }
+        }
+      }
     }
+  }
+
+  /** Vertical distance from a generation's node centers to the bottom of the
+   *  tallest label whose symbol falls within [lo, hi] (so a routed bond clears
+   *  only the labels it actually passes over). */
+  private maxLabelDepth(
+    graph: GenogramGraph, pos: Positions, gen: number, lo = -Infinity, hi = Infinity,
+  ): number {
+    let max = R + 15;
+    for (const p of graph.roster) {
+      if (graph.generationOf(p.id) !== gen) continue;
+      const x = pos.cx(p.id);
+      if (x < lo || x > hi) continue;
+      const lines = wrapLabel(p.name ?? p.id, LABEL_WRAP).length;
+      let d = R + 15 + lines * LABEL_LINE_H;
+      if (p.birthDate || p.deathDate) d += LABEL_LINE_H;
+      if (p.conditions?.length) d += LABEL_LINE_H;
+      if (d > max) max = d;
+    }
+    return max;
   }
 
   private drawBondArrow(
