@@ -1,0 +1,16 @@
+# dependencies
+node_modules/
+
+# bun
+bun.lockb
+.bun/
+
+# os / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# build output (SVG/PNG under examples/ are committed intentionally)
+dist/
+*.log

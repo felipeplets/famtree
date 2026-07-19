@@ -1,0 +1,285 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/genogram.schema.json",
+  "title": "Genogram",
+  "description": "A schema describing a genogram: a graphical representation of family members, their biological/legal relationships, and their emotional relationships, suitable for rendering.",
+  "type": "object",
+  "required": ["version", "people", "relationships"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Schema/document version, e.g. semantic version of the genogram document format.",
+      "default": "1.0.0"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional information about the genogram itself.",
+      "additionalProperties": true,
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "author": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "focusPersonId": {
+          "type": "string",
+          "description": "ID of the index person (proband) the genogram is centered on."
+        }
+      }
+    },
+    "people": {
+      "type": "array",
+      "description": "All individuals appearing in the genogram.",
+      "items": { "$ref": "#/$defs/person" }
+    },
+    "relationships": {
+      "type": "array",
+      "description": "All relationships between people (family/legal unions, parent-child, and emotional/social bonds).",
+      "items": { "$ref": "#/$defs/relationship" }
+    },
+    "layout": {
+      "type": "object",
+      "description": "Optional rendering hints. If omitted, a renderer should auto-layout by generation.",
+      "additionalProperties": false,
+      "properties": {
+        "orientation": {
+          "type": "string",
+          "enum": ["top-down", "bottom-up"],
+          "default": "top-down"
+        },
+        "generationSpacing": { "type": "number", "minimum": 0 },
+        "siblingSpacing": { "type": "number", "minimum": 0 },
+        "positions": {
+          "type": "array",
+          "description": "Explicit coordinates for people, overriding auto-layout.",
+          "items": {
+            "type": "object",
+            "required": ["personId", "x", "y"],
+            "additionalProperties": false,
+            "properties": {
+              "personId": { "type": "string" },
+              "x": { "type": "number" },
+              "y": { "type": "number" },
+              "generation": { "type": "integer" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "person": {
+      "type": "object",
+      "description": "An individual in the family system.",
+      "required": ["id", "sex"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for this person, referenced by relationships."
+        },
+        "name": { "type": "string" },
+        "sex": {
+          "type": "string",
+          "description": "Biological/graphical sex, which determines node shape (square=male, circle=female).",
+          "enum": ["male", "female", "unknown"]
+        },
+        "gender": {
+          "type": "string",
+          "description": "Optional gender identity, independent of the shape-determining 'sex'."
+        },
+        "birthDate": { "type": "string", "format": "date" },
+        "deathDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Present only if the person is deceased. Deceased nodes are typically drawn with an X through the shape."
+        },
+        "deceased": {
+          "type": "boolean",
+          "description": "Whether the person is deceased. Should be true if deathDate is set.",
+          "default": false
+        },
+        "isProband": {
+          "type": "boolean",
+          "description": "Whether this person is the index person/proband (often marked with an arrow).",
+          "default": false
+        },
+        "isPregnancy": {
+          "type": "boolean",
+          "description": "Represents a current pregnancy (drawn as a triangle).",
+          "default": false
+        },
+        "birthOrder": {
+          "type": "integer",
+          "description": "Ordering among siblings; lower numbers are drawn to the left (oldest first)."
+        },
+        "twinGroupId": {
+          "type": "string",
+          "description": "Identifier shared by twins/multiples born together."
+        },
+        "twinType": {
+          "type": "string",
+          "enum": ["identical", "fraternal"],
+          "description": "Type of twinship when twinGroupId is set."
+        },
+        "conditions": {
+          "type": "array",
+          "description": "Medical, mental-health, or behavioral conditions used for shading/annotation.",
+          "items": { "$ref": "#/$defs/condition" }
+        },
+        "labels": {
+          "type": "array",
+          "description": "Free-form annotations displayed near the node.",
+          "items": { "type": "string" }
+        },
+        "notes": { "type": "string" },
+        "style": { "$ref": "#/$defs/nodeStyle" }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "description": "e.g. 'diabetes', 'depression', 'alcoholism'." },
+        "category": {
+          "type": "string",
+          "enum": ["medical", "mental-health", "substance-use", "developmental", "other"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "in-remission", "resolved", "at-risk", "carrier"]
+        },
+        "ageOfOnset": { "type": "integer", "minimum": 0 },
+        "color": {
+          "type": "string",
+          "description": "Optional fill color/pattern used to shade the node for this condition.",
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+        }
+      }
+    },
+    "nodeStyle": {
+      "type": "object",
+      "description": "Optional visual overrides for a person's node.",
+      "additionalProperties": false,
+      "properties": {
+        "fillColor": { "type": "string", "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$" },
+        "borderColor": { "type": "string", "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$" },
+        "borderWidth": { "type": "number", "minimum": 0 }
+      }
+    },
+    "relationship": {
+      "oneOf": [
+        { "$ref": "#/$defs/unionRelationship" },
+        { "$ref": "#/$defs/parentChildRelationship" },
+        { "$ref": "#/$defs/emotionalRelationship" }
+      ]
+    },
+    "unionRelationship": {
+      "type": "object",
+      "description": "A partnership/union between two people (marriage, cohabitation, etc.). Drawn as a horizontal connecting line between partners.",
+      "required": ["id", "type", "partnerIds"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "const": "union" },
+        "partnerIds": {
+          "type": "array",
+          "description": "The two people forming the union.",
+          "items": { "type": "string" },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "unionType": {
+          "type": "string",
+          "enum": ["married", "engaged", "cohabiting", "committed", "casual", "unknown"],
+          "default": "married"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["current", "separated", "divorced", "annulled", "widowed", "ended"],
+          "default": "current"
+        },
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" },
+        "notes": { "type": "string" }
+      }
+    },
+    "parentChildRelationship": {
+      "type": "object",
+      "description": "A parent-child link, connecting a child to a parent or a parental union.",
+      "required": ["id", "type", "childId"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "const": "parent-child" },
+        "childId": { "type": "string" },
+        "parentIds": {
+          "type": "array",
+          "description": "One or two parent person IDs.",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "maxItems": 2
+        },
+        "unionId": {
+          "type": "string",
+          "description": "Optional reference to the union the child descends from (alternative to listing parentIds)."
+        },
+        "biological": {
+          "type": "string",
+          "enum": ["biological", "adopted", "foster", "step", "surrogate", "unknown"],
+          "default": "biological"
+        },
+        "pregnancyOutcome": {
+          "type": "string",
+          "description": "Special child nodes for non-live outcomes.",
+          "enum": ["live-birth", "miscarriage", "stillbirth", "abortion"]
+        }
+      }
+    },
+    "emotionalRelationship": {
+      "type": "object",
+      "description": "An emotional/social bond between two people, drawn with distinctive connector lines.",
+      "required": ["id", "type", "personIds", "bond"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "const": "emotional" },
+        "personIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "bond": {
+          "type": "string",
+          "description": "The nature of the emotional relationship, mapped to a connector style.",
+          "enum": [
+            "close",
+            "very-close",
+            "fused",
+            "distant",
+            "estranged",
+            "cutoff",
+            "hostile",
+            "conflict",
+            "fused-hostile",
+            "abuse",
+            "neglect",
+            "friendship",
+            "love",
+            "focused-on"
+          ]
+        },
+        "direction": {
+          "type": "string",
+          "description": "For asymmetric bonds (e.g. one person focused on / abusive toward another).",
+          "enum": ["mutual", "a-to-b", "b-to-a"],
+          "default": "mutual"
+        },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

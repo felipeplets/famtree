@@ -1,0 +1,22 @@
+{
+  "name": "genogram",
+  "version": "1.0.0",
+  "description": "A JSON schema for genograms plus a Bun-powered SVG renderer.",
+  "type": "module",
+  "private": true,
+  "module": "src/render.ts",
+  "bin": {
+    "genogram": "src/render.ts"
+  },
+  "scripts": {
+    "render": "bun src/render.ts",
+    "example": "bun src/render.ts examples/example.genogram.json examples/genogram.svg",
+    "typecheck": "tsc --noEmit"
+  },
+  "author": "Felipe Plets",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5"
+  }
+}
