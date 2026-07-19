@@ -25,8 +25,14 @@ export interface RenderResult {
   stats: RenderStats;
 }
 
-function year(d?: string): string | undefined {
-  return d ? d.slice(0, 4) : undefined;
+/** Format an ISO date (YYYY-MM-DD, or partial) as dd.MM.yyyy. Falls back to the
+ *  year alone when month/day are absent. */
+function formatDate(d?: string): string | undefined {
+  if (!d) return undefined;
+  const [y, m, day] = d.split("-");
+  if (y && m && day) return `${day}.${m}.${y}`;
+  if (y && m) return `${m}.${y}`;
+  return y;
 }
 
 /** Greedily wrap a label into lines no longer than `max` characters, breaking on
@@ -230,7 +236,7 @@ export class GenogramRenderer {
   }
 
   private drawLabels(svg: Svg, p: Person, x: number, y: number): void {
-    const yrs = [year(p.birthDate), year(p.deathDate)].filter(Boolean).join("–");
+    const yrs = [formatDate(p.birthDate), formatDate(p.deathDate)].filter(Boolean).join("–");
     const nameLines = wrapLabel(p.name ?? p.id, LABEL_WRAP);
     let ty = y + R + 15;
     for (const line of nameLines) {
