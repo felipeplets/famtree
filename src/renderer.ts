@@ -2,7 +2,7 @@
 // and the shape/bond strategies into a finished SVG document. It orchestrates —
 // the domain knowledge lives in the collaborators it depends on.
 
-import type { Genogram, ParentChildRelationship, Person } from "./genogram";
+import type { Genogram, ParentChildRelationship, Person } from "./types";
 import { GenogramGraph } from "./graph";
 import { GenerationalLayout, type LayoutEngine, type Positions } from "./layout";
 import { Svg, esc } from "./svg";

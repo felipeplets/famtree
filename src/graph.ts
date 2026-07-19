@@ -5,7 +5,7 @@
 import type {
   Genogram, Person, Relationship, UnionRelationship,
   ParentChildRelationship, EmotionalRelationship,
-} from "./genogram";
+} from "./types";
 
 const isUnion = (r: Relationship): r is UnionRelationship => r.type === "union";
 const isParentChild = (r: Relationship): r is ParentChildRelationship =>

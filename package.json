@@ -1,22 +1,73 @@
 {
-  "name": "genogram",
-  "version": "1.0.0",
-  "description": "A JSON schema for genograms plus a Bun-powered SVG renderer.",
+  "name": "famtree",
+  "version": "0.1.0",
+  "description": "A JSON Schema for genograms plus a fast SVG renderer and CLI.",
+  "keywords": [
+    "genogram",
+    "family-tree",
+    "pedigree",
+    "svg",
+    "diagram",
+    "family",
+    "cli",
+    "json-schema"
+  ],
   "type": "module",
-  "private": true,
-  "module": "src/render.ts",
-  "bin": {
-    "genogram": "src/render.ts"
-  },
-  "scripts": {
-    "render": "bun src/render.ts",
-    "example": "bun src/render.ts examples/example.genogram.json examples/genogram.svg",
-    "typecheck": "tsc --noEmit"
-  },
-  "author": "Felipe Plets",
   "license": "MIT",
+  "author": "Felipe Plets",
+  "homepage": "https://github.com/felipeplets/famtree#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felipeplets/famtree.git"
+  },
+  "bugs": {
+    "url": "https://github.com/felipeplets/famtree/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "famtree": "dist/cli.js"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./schema": "./famtree.schema.json",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "famtree.schema.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "example": "bun src/cli.ts examples/example.genogram.json -o examples/genogram.svg",
+    "prepublishOnly": "bun run build"
+  },
+  "peerDependencies": {
+    "ajv": "^8"
+  },
+  "peerDependenciesMeta": {
+    "ajv": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/node": "^20",
+    "ajv": "^8",
+    "tsup": "^8",
     "typescript": "^5"
   }
 }

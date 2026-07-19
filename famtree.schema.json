@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/schemas/genogram.schema.json",
+  "$id": "https://github.com/felipeplets/famtree/blob/main/famtree.schema.json",
   "title": "Genogram",
   "description": "A schema describing a genogram: a graphical representation of family members, their biological/legal relationships, and their emotional relationships, suitable for rendering.",
   "type": "object",

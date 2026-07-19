@@ -3,7 +3,7 @@
 // concrete algorithm (Dependency Inversion / Open-Closed for new strategies).
 
 import type { GenogramGraph } from "./graph";
-import type { UnionRelationship } from "./genogram";
+import type { UnionRelationship } from "./types";
 import { GEN_SPACING, MARGIN, R, SIB_STEP, SPOUSE_HALF } from "./constants";
 
 /** Resolved coordinates for a laid-out genogram. */

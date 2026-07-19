@@ -1,8 +1,10 @@
 # dependencies
 node_modules/
 
+# build output (published to npm, not committed)
+dist/
+
 # bun
-bun.lockb
 .bun/
 
 # os / editor
@@ -11,6 +13,4 @@ bun.lockb
 .idea/
 .vscode/
 
-# build output (SVG/PNG under examples/ are committed intentionally)
-dist/
 *.log
