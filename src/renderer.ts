@@ -7,7 +7,7 @@ import { GenogramGraph } from "./graph";
 import { GenerationalLayout, type LayoutEngine, type Positions } from "./layout";
 import { Svg, esc } from "./svg";
 import { shapeFor } from "./shapes";
-import { bondStyle, strokeOffsets } from "./bonds";
+import { bondStyle, strokeOffsets, type BondStyle } from "./bonds";
 import { GEN_SPACING, LABEL_LINE_H, LABEL_WRAP, MARGIN, R } from "./constants";
 
 const STROKE = `stroke="#222" stroke-width="2" fill="none"`;
@@ -160,34 +160,65 @@ export class GenogramRenderer {
   }
 
   private drawEmotional(svg: Svg, graph: GenogramGraph, pos: Positions): void {
-    const sameGen: EmotionalRelationship[] = [];
+    const routed: EmotionalRelationship[] = [];
     for (const e of graph.emotions) {
       const [a, b] = e.personIds;
-      if (graph.generationOf(a) === graph.generationOf(b)) sameGen.push(e);
-      else this.drawStraightBond(svg, pos, e);
+      if (graph.generationOf(a) !== graph.generationOf(b)) {
+        this.drawStraightBond(svg, pos, e); // cross-generation: straight diagonal
+      } else if (this.areNeighbors(graph, pos, a, b)) {
+        this.drawNeighborBond(svg, pos, e); // adjacent: straight, edge-to-edge
+      } else {
+        routed.push(e); // symbols in between: route below the labels
+      }
     }
-    this.drawRoutedBonds(svg, graph, pos, sameGen);
+    this.drawRoutedBonds(svg, graph, pos, routed);
+  }
+
+  /** True when a and b sit in the same generation with no other person's symbol
+   *  horizontally between them. */
+  private areNeighbors(graph: GenogramGraph, pos: Positions, a: string, b: string): boolean {
+    const gen = graph.generationOf(a);
+    const lo = Math.min(pos.cx(a), pos.cx(b));
+    const hi = Math.max(pos.cx(a), pos.cx(b));
+    return !graph.roster.some((p) => {
+      if (p.id === a || p.id === b || graph.generationOf(p.id) !== gen) return false;
+      const x = pos.cx(p.id);
+      return x > lo && x < hi;
+    });
   }
 
   /** A bond drawn as a direct line/zigzag between the two symbols (used across
    *  generations, where a straight diagonal reads cleanly). */
   private drawStraightBond(svg: Svg, pos: Positions, e: EmotionalRelationship): void {
     const [a, b] = e.personIds;
-    const st = bondStyle(e.bond);
-    const x1 = pos.cx(a), y1 = pos.cy(a), x2 = pos.cx(b), y2 = pos.cy(b);
+    this.drawBondSegment(svg, bondStyle(e.bond), pos.cx(a), pos.cy(a), pos.cx(b), pos.cy(b));
+    this.drawBondArrow(svg, e.direction, bondStyle(e.bond).color, pos.cx(a), pos.cy(a), pos.cx(b), pos.cy(b));
+  }
 
+  /** A direct horizontal bond between two neighbouring symbols, trimmed to their
+   *  facing edges so it sits cleanly in the gap between them. */
+  private drawNeighborBond(svg: Svg, pos: Positions, e: EmotionalRelationship): void {
+    const [a, b] = e.personIds;
+    const y = pos.cy(a);
+    const left = Math.min(pos.cx(a), pos.cx(b)) + R;
+    const right = Math.max(pos.cx(a), pos.cx(b)) - R;
+    this.drawBondSegment(svg, bondStyle(e.bond), left, y, right, y);
+    this.drawBondArrow(svg, e.direction, bondStyle(e.bond).color, pos.cx(a), pos.cy(a), pos.cx(b), pos.cy(b));
+  }
+
+  /** Draw the styled line/zigzag/parallel strokes of a bond between two points. */
+  private drawBondSegment(svg: Svg, st: BondStyle, x1: number, y1: number, x2: number, y2: number): void {
     if (st.zig) {
       svg.path(zigzag(x1, y1, x2, y2), `stroke="${st.color}" stroke-width="1.6" fill="none"`);
-    } else {
-      const nx = -(y2 - y1), ny = x2 - x1;
-      const nl = Math.hypot(nx, ny) || 1;
-      for (const o of strokeOffsets(st.lines)) {
-        const ox = (nx / nl) * o, oy = (ny / nl) * o;
-        const dash = st.dash ? `stroke-dasharray="${st.dash}"` : "";
-        svg.line(x1 + ox, y1 + oy, x2 + ox, y2 + oy, `stroke="${st.color}" stroke-width="1.6" ${dash}`);
-      }
+      return;
     }
-    this.drawBondArrow(svg, e.direction, st.color, x1, y1, x2, y2);
+    const nx = -(y2 - y1), ny = x2 - x1;
+    const nl = Math.hypot(nx, ny) || 1;
+    for (const o of strokeOffsets(st.lines)) {
+      const ox = (nx / nl) * o, oy = (ny / nl) * o;
+      const dash = st.dash ? `stroke-dasharray="${st.dash}"` : "";
+      svg.line(x1 + ox, y1 + oy, x2 + ox, y2 + oy, `stroke="${st.color}" stroke-width="1.6" ${dash}`);
+    }
   }
 
   /** Same-generation bonds routed below the labels: two short vertical stubs and
