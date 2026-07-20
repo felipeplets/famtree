@@ -1,0 +1,8 @@
+# Docusaurus build output & caches
+build/
+.docusaurus/
+.cache-loader/
+
+# Generated reference pages (produced by `nx run docs:gen`)
+docs/reference/schema.md
+docs/reference/cli.md
