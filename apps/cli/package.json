@@ -26,6 +26,7 @@
     "famtree": "dist/cli.js"
   },
   "files": [
+    "README.md",
     "dist"
   ],
   "dependencies": {

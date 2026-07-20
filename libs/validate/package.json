@@ -26,6 +26,7 @@
     }
   },
   "files": [
+    "README.md",
     "dist"
   ],
   "dependencies": {
