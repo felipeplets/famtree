@@ -1,6 +1,6 @@
 {
   "name": "@famtree/renderer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "SVG renderer for genogram documents.",
   "type": "module",
   "license": "MIT",
@@ -12,7 +12,9 @@
     "url": "git+https://github.com/felipeplets/famtree.git",
     "directory": "libs/renderer"
   },
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -23,10 +25,12 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "dependencies": {
-    "@famtree/schema": "workspace:0.1.0",
-    "@famtree/core": "workspace:0.1.0"
+    "@famtree/schema": "workspace:*",
+    "@famtree/core": "workspace:*"
   },
   "scripts": {
     "build": "tsup && tsc -p tsconfig.build.json",

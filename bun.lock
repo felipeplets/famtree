@@ -16,14 +16,14 @@
     },
     "apps/cli": {
       "name": "@famtree/cli",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "bin": {
         "famtree": "dist/cli.js",
       },
       "dependencies": {
-        "@famtree/renderer": "workspace:0.1.0",
-        "@famtree/schema": "workspace:0.1.0",
-        "@famtree/validate": "workspace:0.1.0",
+        "@famtree/renderer": "workspace:*",
+        "@famtree/schema": "workspace:*",
+        "@famtree/validate": "workspace:*",
       },
       "peerDependencies": {
         "ajv": "8.20.0",
@@ -34,28 +34,28 @@
     },
     "libs/core": {
       "name": "@famtree/core",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "dependencies": {
-        "@famtree/schema": "workspace:0.1.0",
+        "@famtree/schema": "workspace:*",
       },
     },
     "libs/renderer": {
       "name": "@famtree/renderer",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "dependencies": {
-        "@famtree/core": "workspace:0.1.0",
-        "@famtree/schema": "workspace:0.1.0",
+        "@famtree/core": "workspace:*",
+        "@famtree/schema": "workspace:*",
       },
     },
     "libs/schema": {
       "name": "@famtree/schema",
-      "version": "0.1.0",
+      "version": "0.1.1",
     },
     "libs/validate": {
       "name": "@famtree/validate",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "dependencies": {
-        "@famtree/schema": "workspace:0.1.0",
+        "@famtree/schema": "workspace:*",
       },
       "peerDependencies": {
         "ajv": "8.20.0",
@@ -576,16 +576,6 @@
 
     "yargs-parser": ["yargs-parser@21.1.1", "", {}, "sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw=="],
 
-    "@napi-rs/wasm-runtime/@emnapi/core": ["@emnapi/core@1.11.2", "", { "dependencies": { "@emnapi/wasi-threads": "1.2.2", "tslib": "^2.4.0" } }, "sha512-TC8MkTuZUtcTSiFeuC0ksCh9QIJ5+F21MvZ4Wn4ORfYaFJ/0dsiudv5tVkejgwZlwQ39jL9WWDe2lz8x0WglOA=="],
-
-    "@napi-rs/wasm-runtime/@emnapi/runtime": ["@emnapi/runtime@1.11.2", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-kyOl3X0DuTiT1h2ft8r2fYO8JYtU9a9Xis/zBSiGArNaagCOWx90N1k2wxp18czFDH+OgcWGb5ZP/XMt3dcyPA=="],
-
-    "get-intrinsic/es-object-atoms": ["es-object-atoms@1.1.2", "", { "dependencies": { "es-errors": "^1.3.0" } }, "sha512-HWcBoN6NileqtSydK2FqHbS/LoDd2pqrnQHLyJzBj4kOp/ky2MWMN694xOfkK8/SnUsW2DH7EfyVlydKCsm1Zw=="],
-
-    "get-proto/es-object-atoms": ["es-object-atoms@1.1.2", "", { "dependencies": { "es-errors": "^1.3.0" } }, "sha512-HWcBoN6NileqtSydK2FqHbS/LoDd2pqrnQHLyJzBj4kOp/ky2MWMN694xOfkK8/SnUsW2DH7EfyVlydKCsm1Zw=="],
-
     "sucrase/lines-and-columns": ["lines-and-columns@1.2.4", "", {}, "sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg=="],
-
-    "@napi-rs/wasm-runtime/@emnapi/core/@emnapi/wasi-threads": ["@emnapi/wasi-threads@1.2.2", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-c95qOXkHdydNKhscBTebqEC1CVAZpyqOfVfBzQ1qgzyl3gfeldUjIggDbIZgDKsHLgnsM+igH7TJ/eAasaVuMA=="],
   }
 }
