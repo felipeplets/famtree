@@ -16,7 +16,7 @@
     },
     "apps/cli": {
       "name": "@famtree/cli",
-      "version": "0.1.1",
+      "version": "0.1.5",
       "bin": {
         "famtree": "dist/cli.js",
       },
@@ -34,14 +34,14 @@
     },
     "libs/core": {
       "name": "@famtree/core",
-      "version": "0.1.1",
+      "version": "0.1.5",
       "dependencies": {
         "@famtree/schema": "workspace:*",
       },
     },
     "libs/renderer": {
       "name": "@famtree/renderer",
-      "version": "0.1.1",
+      "version": "0.1.5",
       "dependencies": {
         "@famtree/core": "workspace:*",
         "@famtree/schema": "workspace:*",
@@ -49,11 +49,11 @@
     },
     "libs/schema": {
       "name": "@famtree/schema",
-      "version": "0.1.1",
+      "version": "0.1.5",
     },
     "libs/validate": {
       "name": "@famtree/validate",
-      "version": "0.1.1",
+      "version": "0.1.5",
       "dependencies": {
         "@famtree/schema": "workspace:*",
       },

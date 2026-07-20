@@ -1,6 +1,6 @@
 {
   "name": "@famtree/validate",
-  "version": "0.1.1",
+  "version": "0.1.5",
   "description": "Optional AJV-backed validation against the famtree JSON Schema.",
   "type": "module",
   "license": "MIT",

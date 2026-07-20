@@ -1,6 +1,6 @@
 {
   "name": "@famtree/cli",
-  "version": "0.1.1",
+  "version": "0.1.5",
   "description": "CLI to render genogram JSON documents to SVG.",
   "type": "module",
   "license": "MIT",
