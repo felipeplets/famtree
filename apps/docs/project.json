@@ -1,0 +1,45 @@
+{
+  "name": "@famtree/docs",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/docs",
+  "projectType": "application",
+  "targets": {
+    "gen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "bun scripts/gen-schema-docs.ts",
+          "bun scripts/gen-cli-docs.ts"
+        ],
+        "cwd": "apps/docs",
+        "parallel": false
+      },
+      "inputs": [
+        "{workspaceRoot}/libs/schema/famtree.schema.json",
+        "{workspaceRoot}/apps/cli/src/usage.ts",
+        "{projectRoot}/scripts/**/*"
+      ],
+      "outputs": [
+        "{projectRoot}/docs/reference/schema.md",
+        "{projectRoot}/docs/reference/cli.md"
+      ],
+      "cache": true
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": { "command": "docusaurus build", "cwd": "apps/docs" },
+      "dependsOn": ["gen"],
+      "outputs": ["{projectRoot}/build"],
+      "cache": true
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": { "command": "docusaurus start", "cwd": "apps/docs" },
+      "dependsOn": ["gen"]
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": { "command": "docusaurus serve", "cwd": "apps/docs" }
+    }
+  }
+}

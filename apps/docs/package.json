@@ -1,0 +1,36 @@
+{
+  "name": "@famtree/docs",
+  "version": "0.1.1",
+  "private": true,
+  "description": "Documentation site for famtree, built with Docusaurus and deployed to GitHub Pages.",
+  "license": "MIT",
+  "author": "Felipe Plets",
+  "homepage": "https://felipeplets.github.io/famtree/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felipeplets/famtree.git",
+    "directory": "apps/docs"
+  },
+  "scripts": {
+    "gen": "bun scripts/gen-schema-docs.ts && bun scripts/gen-cli-docs.ts",
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "serve": "docusaurus serve",
+    "clear": "docusaurus clear"
+  },
+  "dependencies": {
+    "@docusaurus/core": "3.10.2",
+    "@docusaurus/preset-classic": "3.10.2",
+    "@mdx-js/react": "3.1.1",
+    "clsx": "2.1.1",
+    "prism-react-renderer": "2.4.1",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "3.10.2"
+  },
+  "engines": {
+    "node": ">=20.0"
+  }
+}

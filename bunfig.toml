@@ -1,0 +1,6 @@
+[install]
+# Docusaurus (apps/docs) uses webpack SSR that requires a single hoisted copy of
+# react-loadable; Bun's default isolated linker breaks it with
+# "require.resolveWeak is not a function". Hoisted linking keeps a flat, npm-style
+# node_modules that Docusaurus and the rest of the workspace build against.
+linker = "hoisted"
