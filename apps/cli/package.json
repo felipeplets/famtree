@@ -6,6 +6,14 @@
   "license": "MIT",
   "author": "Felipe Plets",
   "keywords": ["genogram", "family-tree", "pedigree", "svg", "cli"],
+  "homepage": "https://github.com/felipeplets/famtree#readme",
+  "bugs": "https://github.com/felipeplets/famtree/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felipeplets/famtree.git",
+    "directory": "apps/cli"
+  },
+  "publishConfig": { "access": "public" },
   "bin": {
     "famtree": "dist/cli.js"
   },

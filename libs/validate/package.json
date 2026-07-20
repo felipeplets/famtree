@@ -5,6 +5,14 @@
   "type": "module",
   "license": "MIT",
   "author": "Felipe Plets",
+  "homepage": "https://github.com/felipeplets/famtree#readme",
+  "bugs": "https://github.com/felipeplets/famtree/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felipeplets/famtree.git",
+    "directory": "libs/validate"
+  },
+  "publishConfig": { "access": "public" },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
